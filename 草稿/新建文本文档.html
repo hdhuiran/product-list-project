@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container {
+        display: flex;
+        height: 100vh;
+      }
+
+      .side_first_row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between; /* 两端对齐 */
+        align-items: center; /* 垂直居中 */
+        padding: 0 20px; /* 添加左右内边距 */
+      }
+      
+      /* 盗版seek样式 */
+      .logo {
+        flex: 1;
+        white-space: nowrap; /* 防止文字换行 */
+        color: #2196f3; /* 蓝色 */
+        font-size: 1.6em; /* 原始尺寸的1.5倍 */
+        font-weight: bold;
+      }
+      /* 侧边栏按钮样式 */
+      .sidebar_bottom {
+        flex: 1;
+        white-space: nowrap; /* 防止文字换行 */
+        flex-shrink: 0; /* 禁止缩小 */
+        margin-left: 20px; /* 添加间距 */
+      }
+      /* 按钮基础样式 */
+      .collapse-btn {
+        background: none;
+        border: none;
+        padding: 8px;
+        cursor: pointer; /* 鼠标悬停样式 */
+        position: relative; /* 相对定位 */
+        transition: 0.3s; /* 所有属性变化添加0.3秒过渡动画 */
+      }
+
+      /* 文字默认隐藏 */
+      .btn-text {
+        opacity: 0; /* 完全透明（隐藏文字） */
+        margin-left: 8px;
+        transition: 0.3s; /* 文字透明度变化过渡动画 */
+      }
+
+      /* 鼠标悬停效果 */
+      .collapse-btn:hover .btn-text {
+        opacity: 1; /* 从透明变成不透明 */
+        color: #666;
+      }
+
+      /* 箭头样式 */
+      .arrow {
+        font-size: 1.2em; /* 箭头大小（相对父元素字体） */
+        display: inline-block; /* 行内块（可设置宽高且不换行） */
+        transition: 0.3s; /* 箭头旋转过渡添加动画 */
+      }
+      /* 侧边栏自适应 */
+      .sidebar {
+        flex: 1;
+        min-width: 200px; /* 最小宽度 */
+        background: #eee; 
+      }
+
+      /* 内容区自适应  */
+      .content {
+        flex: 6;
+        background: white;
+      }
+    </style>
+    <script>
+      // 侧边栏动画
+      function toggleSidebar() {
+         // 1. 获取DOM元素
+        const sidebar = document.querySelector(".sidebar");
+        const arrow = document.querySelector(".arrow");
+
+        // 切换侧边栏状态 修改但不覆盖其他class属性 执行后变为 sidebar collapsed，再次执行恢复为 sidebar
+        // 当 collapsed 类被添加或移除时，浏览器会重新渲染元素，应用或取消与该类关联的 CSS 样式
+        sidebar.classList.toggle("collapsed");
+
+        // 旋转箭头
+        //contains该方法直接操作 DOM 元素的类名列表，检测是否存在指定类名，时间复杂度为 O(1)，性能高效
+        arrow.style.transform = sidebar.classList.contains("collapsed")
+        // 检测侧边栏元素 sidebar 是否包含 collapsed类名 
+        // 三元运算符
+          ? "rotate(180deg)"//条件为真时，旋转180度
+          : "rotate(0deg)";//条件为假时，恢复
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <div class="side_first_row">
+          <div class="logo">盗版seek</div>
+          <div class="sidebar_bottom">
+            <button class="collapse-btn" onclick="toggleSidebar()">
+              <span class="btn-text">侧边栏收起</span>
+              <span class="arrow">←</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">内容区</div>
+    </div>
+  </body>
+</html>

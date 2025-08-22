@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录页面</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        /* 页面整体布局（3:4:3 比例高度） */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f5f5f5;
+        }
+
+        .login_container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo_section {
+            flex: 3;
+            height: calc(100vh * 3 / 10);
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 40px;
+            background: transparent;
+        }
+
+        .login_section {
+            flex: 4;
+            height: calc(100vh * 4 / 10);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: transparent;
+        }
+
+        .icp_section {
+            flex: 3;
+            height: calc(100vh * 3 / 10);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9em;
+            color: #666;
+            padding: 20px;
+            background: transparent;
+        }
+
+        /* 第一行：Logo 部分 */
+        .logo {
+            font-size: 3.2em;
+            font-weight: bold;
+            color: #2196f3;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+        }
+
+        /* 中间登录区域容器 */
+        .login_textarea {
+            width: 80%;
+            height: 90%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(33, 150, 243, 0.15);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 左列：60% 宽度，垂直弹性布局 */
+        .login_left {
+            flex: 6;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            height: 100%;
+        }
+
+        /* 登录模式切换（第一行） */
+        .login_left_change {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            /* 模式按钮整体居中 */
+            align-items: center;
+            margin-bottom: 16px;
+            padding-left: 24px;
+            /* 左侧内边距，与返回按钮左距一致 */
+        }
+
+        .mode_buttons_container {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            /* 按钮组内部居中 */
+        }
+
+        .back_btn.absolute-left {
+            position: absolute;
+            left: 24px;
+            z-index: 1;
+            /* 避免覆盖模式按钮 */
+            padding: 8px 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: white;
+            background-color: #2196f3;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 6px rgba(33, 150, 243, 0.2);
+        }
+
+        .login_mode_btn {
+            padding: 8px 16px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            color: #444;
+            transition: color 0.5s;
+        }
+
+        .login_mode_btn.active {
+            color: #2196f3;
+            font-weight: 500;
+            border-bottom: 2px solid #2196f3;
+        }
+
+        /* 提示信息（第二行） */
+        .login_left_mention {
+            text-align: center;
+            font-size: 0.95em;
+            color: #666;
+            margin: 8px 0 24px;
+        }
+
+        /* 输入区域（第三行） */
+        .login_account,
+        .login_passward,
+        .login_number {
+            height: 48px;
+            margin: 12px 0;
+            padding: 0 16px;
+            border: 2px solid #eee;
+            border-radius: 24px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .login_account:focus,
+        .login_passward:focus,
+        .login_number:focus {
+            border-color: #2196f3;
+            outline: none;
+        }
+
+        /* 密码登录区域：垂直排列 */
+        .login_account_password {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 验证码登录区域：垂直排列 */
+        .login_verification_code {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 验证码和按钮的容器：水平排列 */
+        .login_code_row {
+            display: flex;
+            flex-direction: row;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* 输入框和按钮比例调整 */
+        .login_QRC,
+        .send_QRC {
+            height: 48px;
+            margin: 12px 0;
+            border: 2px solid #eee;
+            border-radius: 24px;
+            font-size: 1em;
+            padding: 0 16px;
+            box-sizing: border-box;
+        }
+
+        .login_QRC {
+            flex: 7;
+        }
+
+        .send_QRC {
+            flex: 3;
+            background: white;
+            color: black;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .send_QRC:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* 协议勾选（第四行） */
+        .login_left_protocol {
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+            color: #666;
+            margin: 16px 0;
+        }
+
+        .login_left_protocol input {
+            margin-right: 8px;
+            accent-color: #2196f3;
+        }
+
+        /* 登录按钮（第五行） */
+        .main_login_btn {
+            height: 52px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 26px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
+        }
+
+        .main_login_btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(33, 150, 243, 0.2);
+        }
+
+        /* 找回密码/注册（第六行） */
+        .login_left_forg_reg {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 24px;
+        }
+
+        .login_left_forg_reg span {
+            cursor: pointer;
+            text-decoration: underline;
+            color: #2196f3;
+        }
+
+        /* 右列整体布局 */
+        .login_right {
+            flex: 4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        /* 二维码区域（正方形，居中） */
+        .QR_code {
+            width: 200px;
+            height: 200px;
+            background: #fff;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 提示文本（覆盖在二维码下方，可调整位置） */
+        .QR_code_wxtips {
+            font-size: 0.9em;
+            color: #666;
+            position: absolute;
+            top: calc(50% + 100px);
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        /* 返回按钮样式 */
+        .back_btn:hover {
+            transform: translateX(-2px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login_container">
+        <!-- 第一行：Logo 区域 -->
+        <div class="logo_section">
+            <div class="logo">盗版seek</div>
+        </div>
+
+        <!-- 第二行：登录区域 -->
+        <div class="login_section">
+            <div class="login_textarea">
+                <!-- 左列：登录表单 -->
+                <div class="login_left">
+                    <!-- 登录模式切换 -->
+                    <div class="login_left_change">
+                        <!-- 新增返回按钮 -->
+                        <button class="back_btn absolute-left" onclick="goBack()">
+                            ← 返回
+                        </button>
+                        <div class="mode_buttons_container">
+                            <button class="login_mode_btn" data-mode="password">密码登录</button>
+                            <button class="login_mode_btn active" data-mode="verification">验证码登录</button>
+                        </div>
+                    </div>
+
+                    <!-- 提示信息 -->
+                    <div class="login_left_mention">安全登录，保护你的账号安全</div>
+
+                    <!-- 账号密码输入 -->
+                    <div class="login_account_password" style="display: none;">
+                        <input type="text" placeholder="手机号/邮箱" class="login_account" />
+                        <input type="password" placeholder="密码" class="login_passward" />
+                    </div>
+
+                    <!-- 验证码登录输入 -->
+                    <div class="login_verification_code">
+                        <input type="text" placeholder="手机号" class="login_number" />
+                        <div class="login_code_row">
+                            <input type="text" placeholder="验证码" class="login_QRC" />
+                            <button class="send_QRC">发送验证码</button>
+                        </div>
+                    </div>
+
+                    <!-- 协议勾选 -->
+                    <div class="login_left_protocol">
+                        <input type="checkbox" id="protocol" />
+                        <label for="protocol">我已阅读并同意《用户协议》</label>
+                    </div>
+
+                    <!-- 登录按钮 -->
+                    <button class="main_login_btn">登录</button>
+
+                    <!-- 找回密码/注册 -->
+                    <div class="login_left_forg_reg">
+                        <span>忘记密码？</span>
+                        <span>立即注册</span>
+                    </div>
+                </div>
+
+                <!-- 右列：预留区域（可删除） -->
+                <div class="login_right">
+                    <div class="QR_code">二维码区域</div>
+                    <div class="QR_code_wxtips">微信扫码登录</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第三行：ICP 备案 -->
+        <div class="icp_section">
+            <div>备案号：XXXXXX</div>
+        </div>
+    </div>
+    <script>
+        const loginModeBtns = document.querySelectorAll('.login_mode_btn');
+        const loginAccountPassword = document.querySelector('.login_account_password');
+        const loginVerificationCode = document.querySelector('.login_verification_code');
+
+        // 切换登录模式的函数
+        function switchLoginMode(mode) {
+            loginModeBtns.forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.login_mode_btn[data-mode="${mode}"]`).classList.add('active');
+
+            if (mode === 'password') {
+                loginAccountPassword.style.display = 'flex';
+                loginVerificationCode.style.display = 'none';
+            } else {
+                loginAccountPassword.style.display = 'none';
+                loginVerificationCode.style.display = 'flex';
+            }
+        }
+
+        // 为按钮添加点击事件
+        loginModeBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                switchLoginMode(this.dataset.mode);
+            });
+        });
+
+        // 页面加载时默认激活验证码登录
+        document.addEventListener('DOMContentLoaded', () => {
+            switchLoginMode('verification');
+        });
+
+        // 处理登录按钮点击事件
+        const mainLoginBtn = document.querySelector('.main_login_btn');
+        mainLoginBtn.addEventListener('click', async () => {
+            const activeMode = document.querySelector('.login_mode_btn.active').dataset.mode;
+            let data = {};
+
+            if (activeMode === 'password') {
+                const account = document.querySelector('.login_account').value;
+                const password = document.querySelector('.login_passward').value;
+                data = { mode: 'password', account, password };
+            } else {
+                const number = document.querySelector('.login_number').value;
+                const qrc = document.querySelector('.login_QRC').value;
+                data = { mode: 'verification', number, qrc };
+            }
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('登录成功');
+                } else {
+                    alert('登录失败');
+                }
+            } catch (error) {
+                console.error('请求出错:', error);
+            }
+        });
+
+        // 返回上一页（可根据实际需求修改跳转逻辑）
+        function goBack() {
+            if (confirm("确定要返回首页吗？")) {
+                window.location.href = "mainv11.0.html";
+            }
+        }
+    </script>
+</body>
+
+</html>

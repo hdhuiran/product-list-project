@@ -1,0 +1,217 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Conversation Page</title>
+    <style>
+        .history-list {
+            max-height: 99vh;
+            /*max-width: 25vh;*/
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .new_chat {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .conversation-main {
+            max-height: 95vh;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        #conversation {
+            overflow-y: auto;
+            height: 80vh;
+            scroll-behavior: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Left Part: History Conversation Titles -->
+            <div class="col-md-3 bg-light p-3 history-list">
+                <h4>History</h4>
+                <ul class="list-group">
+
+                </ul>
+            </div>
+
+            <!-- Right Part: Main Content -->
+            <div class="col-md-9">
+                <!-- Top Section -->
+                <div class="row align-items-center p-3">
+                    <!-- Top Center: Profile and Assistant Selection -->
+                    <div class="col-md-8">
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="profileSelect">Profile</label>
+                            <select class="form-select" id="profileSelect">
+
+                            </select>
+                            <label class="input-group-text" for="assistantSelect">Assistant</label>
+                            <select class="form-select" id="assistantSelect">
+
+
+
+                            </select>
+                            &nbsp;&nbsp;
+                            <div id="new_chat" ,="" class="new_chat">
+                                <form action="/chat/personal" method="POST" id="newConversationForm">
+                                    <div class="input-box">
+                                        <button type="submit" id="new-chat">New Chat</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <script>
+                                document.getElementById("profileSelect").addEventListener("change", updateProfile);
+                                document.getElementById("assistantSelect").addEventListener("change", updateAssistant);
+                                function updateProfile() {
+                                    const profileSelect = document.getElementById("profileSelect")
+                                    const profileSubmit = document.getElementById("profileName");
+                                    profileSubmit.value = profileSelect.value;
+                                }
+
+                                function updateAssistant() {
+                                    const assistantSelect = document.getElementById("assistantSelect");
+                                    const assistantSubmit = document.getElementById("assistantSubmit");
+                                    assistantSubmit.value = assistantSelect.value;
+                                }
+                            </script>
+                        </div>
+                    </div>
+
+                    <!-- Top Right: User Info -->
+                    <div class="col-md-4 text-end">
+
+                        <a href="/auth/login">Login</a>
+
+                    </div>
+                </div>
+
+                <!-- Main Part: Conversation History -->
+                <div class="conversation-main bg-white p-3 border">
+                    <h4>Natal Chart - Welcome to your Personal AI Astrologer!</h4>
+                    <div id="conversation">
+
+                        <div class="mb-3" data-message-id="1">
+                            <strong>Personal AI Astrologer</strong>:
+                            <div class="message-content" id="msg-1" style="white-space: pre-wrap;">
+                                <p>Welcome! Your birth chart is a cosmic map to your personality—let's explore its
+                                    hidden treasures!</p>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const messages = document.querySelectorAll('.message-content');
+
+                            messages.forEach(function (contentElement) {
+                                const rawContent = contentElement.innerText;
+                                const htmlContent = marked.parse(rawContent);
+                                contentElement.innerHTML = htmlContent;
+                            });
+                        });
+                    </script>
+                    <!-- Form to send the message -->
+                    <form action="/chat/send_message" method="post" class="input-group mt-3" id="messageForm">
+                        <input type="hidden" name="conversation_id" value="">
+                        <input type="hidden" name="profile_name" id="profileName" value="">
+                        <input type="hidden" name="model_type" id="assistantSubmit" value="">
+                        <input type="hidden" name="assistant_name" value="personal">
+                        <script>
+                            updateAssistant();
+                            updateProfile();
+                        </script>
+                        <textarea class="form-control" id="userMessage" name="message"
+                            placeholder="Message AI Astrologer..." rows="3" style="height: 125px;"></textarea>
+                        <button type="submit" class="btn btn-primary" id="sendButton">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const conversationId = "";
+            const lastMessageId = "X";
+            const streamContent = document.getElementById("stream-content");
+
+            if (streamContent) {
+                fetchStreamResponse(conversationId, lastMessageId);
+            }
+        });
+
+        function fetchStreamResponse(conversationId, lastMessageId) {
+            const url = `/chat/stream_response/personal-${conversationId}-${lastMessageId}`;
+            fetch(url)
+                .then(response => {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+
+                    function read() {
+                        reader.read().then(({ done, value }) => {
+                            if (done) {
+                                console.log('Streaming completed');
+                                // Redirect to the desired URL after streaming is done
+                                window.location.href = `/chat/personal/${conversationID}`;
+                                return;
+                            }
+                            const chunkText = decoder.decode(value);
+                            const inner_streamContent = document.getElementById("inner-stream-content");
+                            const streamContent = document.getElementById("stream-content");
+                            inner_streamContent.innerHTML += `${chunkText}`;
+                            streamContent.innerHTML = marked.parse(inner_streamContent.innerHTML);
+                            // console.log(inner_streamContent.innerHTML);
+                            console.log(chunkText);
+                            read();
+                        });
+                    }
+                    read();
+                })
+                .catch(err => console.error('Error while streaming:', err));
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const conversationElement = document.querySelector('#conversation');
+            if (conversationElement) {
+                conversationElement.scrollTop = conversationElement.scrollHeight;
+            }
+        });
+
+
+        function addNewMessage(messageContent) {
+            const conversationElement = document.querySelector('.conversation-main');
+            const newMessageElement = document.createElement('div');
+            newMessageElement.classList.add('message-content');
+            newMessageElement.innerText = messageContent;
+
+            conversationElement.appendChild(newMessageElement);
+            scrollToBottom();  // Scroll to the bottom whenever a new message is added
+        }
+
+
+        function scrollToBottom() {
+            const conversationElement = document.querySelector('.conversation-main');
+            if (conversationElement) {
+                conversationElement.scrollTop = conversationElement.scrollHeight;
+            }
+        }
+
+
+    </script>
+
+</body>
+
+</html>

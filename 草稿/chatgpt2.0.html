@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Chat Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        /* Left column */
+        .left-column {
+            width: 30%;
+            background-color: #f5f5f5;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .button-disabled:hover {
+            background-color: #b0b0b0;
+        }
+
+        .search-chat-window {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-chat-window input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-chat-window .close-button {
+            padding: 5px 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .recent-conversations {
+            margin-top: 20px;
+        }
+
+        .recent-conversations a {
+            display: block;
+            padding: 10px;
+            background-color: #e0e0e0;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: black;
+            border-radius: 5px;
+        }
+
+        .recent-conversations a:hover {
+            background-color: #c0c0c0;
+        }
+
+        /* Right column */
+        .right-column {
+            width: 70%;
+            padding: 20px;
+        }
+
+        .dropdown {
+            margin-bottom: 20px;
+        }
+
+        .login-button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+            background-color: #218838;
+        }
+
+        .login-page {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+
+        .login-page input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .login-page .submit-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .login-page .submit-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="left-column">
+        <div>
+            <button class="button" id="search-chat-btn">搜索聊天</button>
+            <button class="button button-disabled" id="new-chat-btn">新聊天</button>
+        </div>
+
+        <div class="recent-conversations">
+            <h2>最近</h2>
+            <a href="#">对话标题1</a>
+            <a href="#">对话标题2</a>
+            <a href="#">对话标题3</a>
+        </div>
+    </div>
+
+    <div class="right-column">
+        <div>
+            <select class="dropdown">
+                <option>AI1.0</option>
+                <option>AI2.0</option>
+                <option>AI3.0</option>
+            </select>
+        </div>
+        <button class="login-button" id="login-btn">用户登录</button>
+    </div>
+
+    <!-- 搜索聊天窗口 -->
+    <div class="search-chat-window" id="search-chat-window">
+        <input type="text" placeholder="搜索聊天">
+        <button class="close-button" id="close-search-chat">关闭</button>
+    </div>
+
+    <!-- 用户登录页面 -->
+    <div class="login-page" id="login-page">
+        <h2>LOGIN</h2>
+        <label>请输入账号</label>
+        <input type="text" id="username">
+        <label>请输入密码</label>
+        <input type="password" id="password">
+        <button class="submit-button" id="submit-login">登录</button>
+    </div>
+
+    <script>
+        // 搜索聊天按钮
+        document.getElementById('search-chat-btn').addEventListener('mouseenter', function () {
+            this.classList.remove('button-disabled');
+        });
+
+        document.getElementById('search-chat-btn').addEventListener('click', function () {
+            document.getElementById('search-chat-window').style.display = 'block';
+        });
+
+        document.getElementById('close-search-chat').addEventListener('click', function () {
+            document.getElementById('search-chat-window').style.display = 'none';
+        });
+
+        // 新聊天按钮
+        document.getElementById('new-chat-btn').addEventListener('mouseenter', function () {
+            this.classList.add('button-disabled');
+        });
+
+        // 登录按钮
+        document.getElementById('login-btn').addEventListener('click', function () {
+            document.getElementById('login-page').style.display = 'block';
+        });
+
+        // 登录提交按钮
+        document.getElementById('submit-login').addEventListener('click', function () {
+            alert("登录成功!");
+            document.getElementById('login-page').style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>

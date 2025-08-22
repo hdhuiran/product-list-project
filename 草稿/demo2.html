@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人对话界面</title>
+    <style>
+        /* 整体页面布局 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        /* 左侧：对话历史列表 */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #f4f4f4;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            border-right: 2px solid #ddd;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+        }
+
+        .conversation-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .conversation-list li {
+            margin: 10px 0;
+            padding: 8px;
+            background-color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .conversation-list li:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* 右侧：主区域 */
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header select {
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .header a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .header a:hover {
+            text-decoration: underline;
+        }
+
+        .conversation-details {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 300px;
+            background-color: #f9f9f9;
+        }
+
+        .footer {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer input {
+            width: 80%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .footer button {
+            width: 15%;
+            padding: 10px;
+            font-size: 14px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .footer button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 左侧：对话历史列表 -->
+    <div class="sidebar">
+        <h2>对话历史</h2>
+        <ul class="conversation-list">
+            <li onclick="loadConversation('conversation1.html')">对话 1</li>
+            <li onclick="loadConversation('conversation2.html')">对话 2</li>
+            <li onclick="loadConversation('conversation3.html')">对话 3</li>
+            <li onclick="loadConversation('conversation4.html')">对话 4</li>
+        </ul>
+    </div>
+
+    <!-- 右侧：主区域 -->
+    <div class="main-content">
+        <!-- 页面头部：选择个人资料和AI助手 -->
+        <div class="header">
+            <div>
+                <select>
+                    <option value="profile1">个人资料 1</option>
+                    <option value="profile2">个人资料 2</option>
+                    <option value="profile3">个人资料 3</option>
+                </select>
+                <select>
+                    <option value="assistant1">AI助手 1</option>
+                    <option value="assistant2">AI助手 2</option>
+                    <option value="assistant3">AI助手 3</option>
+                </select>
+            </div>
+            <div>
+                <a href="account.html" target="_blank">个人资料</a>
+            </div>
+        </div>
+
+        <!-- 当前对话详情 -->
+        <div class="conversation-details">
+            <p>请选择一个对话以查看详细历史。当前没有选择任何对话。</p>
+        </div>
+
+        <!-- 底部区域：消息输入框和发送按钮 -->
+        <div class="footer">
+            <input type="text" id="message" placeholder="输入消息...">
+            <button onclick="sendMessage()">发送</button>
+        </div>
+    </div>
+
+    <script>
+        // 模拟加载对话历史
+        function loadConversation(conversationPage) {
+            // 假设每个对话页面加载并显示相应的历史记录
+            document.querySelector('.conversation-details').innerHTML = `<p>加载 ${conversationPage} 的内容...</p>`;
+        }
+
+        // 模拟发送消息
+        function sendMessage() {
+            var message = document.getElementById('message').value;
+            if (message.trim()) {
+                alert('消息已发送: ' + message);
+                document.getElementById('message').value = ''; // 清空输入框
+            } else {
+                alert('请输入消息内容');
+            }
+        }
+    </script>
+</body>
+
+</html>

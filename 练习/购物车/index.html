@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>不美团外卖</title>
+    <style>
+        .goods_pic {
+            height: 40px;
+            width: 40px;
+        }
+
+        .footer_car.animate {
+            animation: footer_car_animate ease-in-out 500ms;
+        }
+
+        @keyframes footer_car_animate {
+            0% {
+                transform: scale(1)
+            }
+
+            ;
+
+            25% {
+                transform: scale(0.8);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            75% {
+                transform: scale(0.9);
+            }
+
+            100% {
+                transform: scale((1.0));
+            }
+        }
+
+        .add_to_car {
+            position: fixed;
+            color: #fff;
+            font-size: 23rem;
+            line-height: 40rem;
+            text-align: center;
+            z-index: 9;
+            margin-left: -20rem;
+            margin-top: -20rem;
+            left: 0;
+            top: 0;
+            /* 匀速 */
+            transition: 1s linear;
+        }
+
+        .add_to_car .iconfont {
+            width: 40rem;
+            height: 40rem;
+            background: #4a90e1;
+            border-radius: 50%;
+            display: block;
+            transition: 1s cubic-bezier(0.5, -0.5, 1, 1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="menu">
+            <div class="menu_item" active>
+                <span>热销</span>
+            </div>
+        </div>
+        <div class="goods_list">
+
+        </div>
+    </div>
+    <div class="footer">
+        <div class="footer_car_container">
+            <div class="footer_car">
+                <i class="iconfont i_gouwuchefill"></i>
+                <span class="footer_car_badge">0</span>
+            </div>
+            <div class="footer_car_price">
+                <span class="footer_car_unit">￥</span>
+                <span class="footer_car_total">0.00</span>
+            </div>
+            <div class="footer_car_tip">配送费￥0</div>
+        </div>
+        <div class="footer_pay">
+            <a href="">去结算</a>
+            <span>
+                还差￥0元起送
+            </span>
+        </div>
+        <!-- <div class="add_to_car">
+            <i class="iconfont i-jiajianzujianjiahao"></i>
+        </div> -->
+    </div>
+
+    <script src="./js/data.js"></script>
+    <script src="./js/index.js"></script>
+</body>
+
+</html>

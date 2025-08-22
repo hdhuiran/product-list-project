@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>v11.0</title>
+  <style>
+    /* 基础布局 & 全局样式 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* 侧边栏模块 */
+    .sidebar {
+      width: 200px;
+      background: #f5f5f5;
+      position: relative;
+      transition: width 0.3s;
+    }
+
+    .sidebar.collapsed {
+      width: calc(100vw / 28);
+    }
+
+    .side_first_row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .logo {
+      flex: 1;
+      white-space: nowrap;
+      color: #2196f3;
+      font-size: 1.6em;
+      font-weight: bold;
+    }
+
+    .sidebar.collapsed .logo {
+      display: none;
+    }
+
+    .sidebar_bottom {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .collapse_btn {
+      background: none;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      position: relative;
+      transition: 0.3s;
+    }
+
+    .tooltip {
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      transform: translateY(-50%);
+      background-color: #000;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+      z-index: 1;
+    }
+
+    .collapse_btn:hover .tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .arrow {
+      font-size: 1.2em;
+      display: inline-block;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .arrow::after {
+      content: "▶";
+      display: inline-block;
+      transition: transform 0.3s;
+    }
+
+    .sidebar.collapsed .collapse_btn .arrow::after {
+      transform: rotate(180deg);
+    }
+
+    .side_second_row {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 10px;
+    }
+
+    .narrow_btn {
+      width: 100%;
+      min-width: 60px;
+      height: 36px;
+      background: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: block;
+      font-size: 1em;
+      padding: 0 10px;
+      box-sizing: border-box;
+      white-space: nowrap;
+    }
+
+    .narrow_btn:hover {
+      background: #1976d2;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar_bottom_btns {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      padding: 0 10px;
+    }
+
+    /* .download_btn {
+      background: #4caf50;
+    } */
+    .narrow_btn.download_btn {
+      background: white;
+      /* 背景色改为白色 */
+      color: #2196f3;
+      /* 文字颜色与边框统一 */
+      border: 1px solid #2196f3;
+      /* 添加蓝色边框 */
+
+      margin-bottom: 40px;
+    }
+
+    .login_btn {
+      background: #ff5722;
+    }
+
+    /* .download_btn {
+      margin-bottom: 40px;
+    } */
+
+    .sidebar.collapsed .narrow_btn {
+      font-size: 0.8em;
+      padding: 0 5px;
+    }
+
+    .login_btn {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* 内容区模块 */
+    .content {
+      flex: 6;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      /* padding-bottom: 20px; */
+      /* 缩短中部区域高度，为底部区域腾出空间 */
+    }
+
+    .top_section {
+      font-size: medium;
+      height: 1.2em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 10px;
+      height: auto;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .middle_section {
+      flex-grow: 1;
+      /* 自动填充剩余空间，无需固定高度 */
+      background-color: transparent;
+      /* 透明背景 */
+      margin: 0;
+      display: flex;
+      /* 新增：启用Flex布局 */
+      flex-direction: column;
+      /* 垂直排列 */
+      padding: 0;
+      /* 移除内边距 */
+      min-height: 0;
+      /* 允许高度为0 */
+      width: 100%;
+      /* 确保占满父容器宽度 */
+      max-height: calc(100vh - 200px);
+      /* 限制最大高度，避免挤压底部 */
+      overflow-y: auto;
+      /* 超出高度时显示滚动条 */
+    }
+
+    /* 动态添加的白色背景类（通过JavaScript控制） */
+    .middle_section.active {
+      background-color: #ffffff;
+      /* 白色背景 */
+      padding: 20px;
+      /* 内边距，保持内容间距 */
+    }
+
+    .bottom_section {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      /* 原属性，若删除flex则移除 */
+      background-color: #ffffff;
+      /* 白色背景 */
+      margin-top: 0;
+      /* 移除顶部边距 */
+      /* margin-bottom: 20px; */
+      /* 新增底部边距 */
+      border: none;
+      /* 移除原有边框 */
+    }
+
+    .whole_box {
+      max-width: 800px;
+      /* 最大宽度800px */
+      width: 100%;
+      /* 父元素宽度不足时自动缩小 */
+      height: 142px;
+      /* 固定高度 */
+      margin: 0 auto;
+      /* 水平居中 */
+      background-color: #f5f5f5;
+      /* 灰色背景 */
+      padding: 12px 20px;
+      /* 调整内边距，保持内容空间 */
+      box-sizing: border-box;
+      /* 包含内边距在总尺寸内 */
+      overflow: hidden;
+      /* 防止子元素溢出 */
+      display: flex;
+      /* 启用Flex布局 */
+      flex-direction: column;
+      /* 垂直排列子元素 */
+      justify-content: space-between;
+      /* 子元素上下间距均匀分布 */
+      border-radius: 20px;
+      /* 圆角边框 */
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      /* 新增阴影效果 */
+      border: 1px solid #e0e0e0;
+      /* 浅灰色边框 */
+    }
+
+    .chat_box {
+      /* flex: 1; */
+      /* 占据剩余空间 */
+      height: 80px;
+      margin-bottom: 0;
+      /* 移除原有底部间距 */
+    }
+
+    .chat_box textarea {
+      /* 调整文本域高度适应容器 */
+      min-height: calc(100% - 40px);
+      /* 减去内边距空间 */
+      max-height: calc(100% - 40px);
+      height: auto;
+      /* 占满 whole_box 高度 */
+      width: 100%;
+      padding: 8px 12px;
+      border: none;
+      outline: none;
+      font-size: 20px;
+      /* 保持字体一致 */
+      background: transparent;
+      /* 透明背景 */
+      color: #333;
+      resize: none;
+      border-radius: 4px;
+      /* 若 whole_box 有圆角 */
+
+      overflow-y: auto;
+      /* 超过四行时显示滚动条 */
+    }
+
+    .chat_box textarea:focus {
+      outline: none;
+      color: #333;
+    }
+
+    .button_box {
+      width: 100%;
+      height: 32px;
+      /* 固定按钮区域高度 */
+      display: flex;
+      align-items: center;
+      /* 调整按钮区域布局 */
+      flex-shrink: 0;
+      /* 不允许缩小 */
+      margin-top: 8px;
+      /* 减少按钮区域顶部间距 */
+    }
+
+    .AI_note {
+      font-size: 12px;
+    }
+
+    /* 响应式调整（可选） */
+    @media (max-width: 800px) {
+      .whole_box {
+        padding: 15px;
+        /* 小屏幕减少内边距 */
+      }
+
+      .chat_box textarea {
+        font-size: 0.9em;
+        /* 小屏幕缩小字体 */
+      }
+    }
+
+    .button_box .chat_submit_btn {
+      margin-left: auto;
+    }
+
+    .deep_thought_btn {
+      padding: 6px 12px;
+      border: 1px solid #2196f3;
+      border-radius: 20px;
+      background: #fff;
+      color: black;
+      /* 未激活时字体颜色为黑色 */
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-right: 10px;
+    }
+
+    .deep_thought_btn.active {
+      background: #2196f3;
+      color: #fff;
+    }
+
+    .online_search_btn {
+      padding: 6px 12px;
+      border: 1px solid #2196f3;
+      border-radius: 20px;
+      background: #fff;
+      color: black;
+      /* 未激活时字体颜色为黑色 */
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .online_search_btn.active {
+      background: #2196f3;
+      color: #fff;
+    }
+
+    .chat_submit_btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: #2196f3;
+      color: #fff;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .chat_submit_btn:active {
+      transform: scale(0.95);
+    }
+
+    #chat_submit_btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s;
+      position: relative;
+    }
+
+    #chat_submit_btn.disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    #chat_submit_btn:not(.disabled) {
+      background: #2196f3;
+    }
+
+    #chat_submit_btn::before {
+      content: "";
+      position: absolute;
+      top: -35px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 12px;
+      white-space: nowrap;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    #chat_submit_btn:hover::before {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    #chat_submit_btn:not(.disabled):hover::before {
+      content: "发送";
+    }
+
+    #chat_submit_btn.disabled:hover::before {
+      content: "请输入你的问题";
+    }
+
+    /* 下载提示框样式 */
+    .download_tips {
+      position: absolute;
+      top: -220px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 220px;
+      background-color: white;
+      display: none;
+      flex-direction: column;
+      z-index: 1;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+    }
+
+    /* 倒三角箭头 */
+    .download_tips::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 10px 10px 0;
+      border-style: solid;
+      border-color: white transparent transparent;
+    }
+
+    .download_tips_qrc {
+      width: 200px;
+      height: 200px;
+      background-color: #eee;
+    }
+
+    .download_tips_text {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      /* 减小字体大小 */
+      color: black;
+    }
+
+    /* 侧边栏折叠时的样式 */
+    .sidebar.collapsed .download_tips {
+      top: 50%;
+      left: calc(100% + 10px);
+      /* 移到按钮右侧 */
+      transform: translateY(-50%);
+    }
+
+    /* 侧边栏折叠时的箭头方向 */
+    .sidebar.collapsed .download_tips::after {
+      left: -10px;
+      /* 移到左侧 */
+      top: 50%;
+      bottom: auto;
+      transform: translateY(-50%);
+      border-width: 10px 10px 10px 0;
+      /* 改为朝左的箭头 */
+      border-color: transparent white transparent transparent;
+    }
+
+    .sidebar.collapsed .download_tips {
+      display: none;
+    }
+
+    .narrow_btn.download_btn:hover .download_tips {
+      display: flex;
+    }
+
+    /* 保留原有hover效果并微调 */
+    .narrow_btn.download_btn:hover {
+      background: #f8f9fa;
+      /* 鼠标悬停时浅灰色背景 */
+      border-color: #1976d2;
+      /* 边框颜色加深 */
+      transform: translateY(-2px);
+      box-shadow: 0 2px 6px rgba(33, 150, 243, 0.2);
+      /* 阴影改为蓝色调 */
+    }
+
+    /* 用户问题框样式 */
+    .customer_question {
+
+      margin: 10px 0px;
+      /* 上下间距15px，右侧间距20px */
+      max-width: 60%;
+      /* 每行最多25字（假设1字≈10px宽度） */
+      min-height: 30px;
+      /* 最小高度 */
+      align-self: flex-end;
+      /* 靠右对齐 */
+
+      /* 视觉样式 */
+      background-color: #f5f5f5;
+      /* 浅灰色背景 */
+      color: #333;
+      /* 黑色字体 */
+      border-radius: 12px;
+      /* 圆框 */
+      padding: 10px 15px;
+      /* 内边距 */
+      font-size: 14px;
+      /* 字体大小 */
+      line-height: 1.5;
+      /* 行高 */
+      word-wrap: break-word;
+      /* 自动换行 */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      /* 轻微阴影 */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <div class="side_first_row">
+        <div class="logo">盗版seek</div>
+        <div class="sidebar_bottom">
+          <button class="collapse_btn" onclick="toggleSidebar()">
+            <span class="tooltip">侧边栏收起</span>
+            <span class="arrow"></span>
+          </button>
+        </div>
+      </div>
+      <div class="side_second_row">
+        <button class="narrow_btn">开启新对话</button>
+      </div>
+      <div class="sidebar_bottom_btns">
+        <button class="narrow_btn download_btn">
+          下载App
+          <div class="download_tips">
+            <div class="download_tips_qrc"></div>
+            <div class="download_tips_text">扫码下载盗版seek APP</div>
+          </div>
+        </button>
+        <button class="narrow_btn login_btn" onclick="goToLoginPage()">登录</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="top_section">
+        这是顶部部分的文本，不换行，超出部分用省略号显示。
+      </div>
+      <div class="middle_section"></div>
+      <div class="bottom_section">
+        <div class="whole_box">
+          <div class="chat_box">
+            <textarea rows="3" cols="20" placeholder="给 盗版seek 发送消息" id="chat_textarea"></textarea>
+          </div>
+          <div class="button_box">
+            <button class="deep_thought_btn">深度思考</button>
+            <button class="online_search_btn">联网搜索</button>
+            <button class="chat_submit_btn" id="chat_submit_btn">↑</button>
+          </div>
+        </div>
+        <div class="AI_note">
+          内容由AI生成，请仔细甄别
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script>
+    // 侧边栏切换函数
+    function toggleSidebar() {
+      const sidebar = document.querySelector(".sidebar");
+      const isCollapsed = sidebar.classList.toggle("collapsed");
+      localStorage.setItem("sidebarCollapsed", isCollapsed);
+    }
+
+    // 页面加载时恢复侧边栏状态
+    window.addEventListener("DOMContentLoaded", function () {
+      const sidebar = document.querySelector(".sidebar");
+      const savedState = localStorage.getItem("sidebarCollapsed");
+      const initialCollapsed = savedState === "true";
+      if (initialCollapsed) {
+        sidebar.classList.add("collapsed");
+      }
+    });
+
+    // 内容区深度思考按钮
+    const deepThoughtBtn = document.querySelector(".deep_thought_btn");
+    deepThoughtBtn.addEventListener("click", function () {
+      this.classList.toggle("active");
+    });
+
+    const onlineSearchBtn = document.querySelector(".online_search_btn");
+    onlineSearchBtn.addEventListener("click", function () {
+      this.classList.toggle("active");
+    });
+
+
+
+    function goToLoginPage() {
+      window.location.href = "loginv4.0.html";
+    }
+
+    const chatSubmitBtn = document.getElementById("chat_submit_btn");
+    const chatTextarea = document.getElementById("chat_textarea");
+    const middleSection = document.querySelector(".middle_section");
+
+    // 页面加载时：初始化按钮状态
+    window.addEventListener("load", () => {
+      chatSubmitBtn.classList.toggle("disabled", chatTextarea.value.trim() === "");
+    });
+
+    // 输入框内容变化时：更新按钮状态
+    chatTextarea.addEventListener("input", () => {
+      const isEmpty = chatTextarea.value.trim() === "";
+      chatSubmitBtn.classList.toggle("disabled", isEmpty);
+    });
+
+
+
+    // 仅绑定一次点击事件
+    chatSubmitBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const inputText = chatTextarea.value.trim();
+
+      if (!inputText || chatSubmitBtn.classList.contains("disabled")) return;
+
+      const questionDiv = document.createElement("div");
+      questionDiv.className = "customer_question";
+      questionDiv.textContent = inputText;
+
+      // 首次添加内容时设置背景（children.length初始为0，添加后变为1）
+      if (middleSection.children.length === 0) {
+        middleSection.classList.add("active"); // 添加白色背景类
+      }
+
+      middleSection.appendChild(questionDiv);
+      chatTextarea.value = "";
+      chatSubmitBtn.classList.add("disabled");
+    });
+
+    // 若清空所有问题框，隐藏背景
+    function clearQuestions() {
+      middleSection.innerHTML = "";
+      middleSection.style.background = "transparent";
+      middleSection.style.padding = "0";
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .float-box {
+            float: left;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 0, 0, 0.5);
+        }
+
+        .block-box {
+            background: rgba(0, 0, 255, 0.5);
+        }
+
+        .float-left {
+            float: left;
+        }
+
+        .float-right {
+            float: right;
+        }
+
+        .clearfix {
+            clear: both;
+        }
+
+
+
+
+        .up_down {
+            display: flex;
+            /* flex-direction: row; */
+            /* flex-direction: column; */
+            flex-direction: column-reverse;
+        }
+
+        .up {
+            background-color: aqua;
+        }
+
+        .down {
+            background-color: bisque;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div class="float-box"></div>
+    <div class="block-box">
+        Block element's background covers the float, but text wraps around.
+    </div>
+    <div class="float-box"></div>
+    <span>Inline text automatically wraps around floated elements.</span> -->
+    <div class="parent">
+        <div class="float-left">左浮动元素</div>
+        <div class="float-right">右浮动元素</div> <!--// 清楚浮动-->
+        <div class="clearfix"></div>
+
+    </div>
+    <h1>abc</h1>
+    <button>change</button>
+    <div class="up_down">
+        <div class="up">up</div>
+        <div class="down">down</div>
+    </div>
+
+    <script>
+        const h1 = document.querySelector('h1');
+        const btn = document.querySelector('button');
+        function delay(duration) {
+            var start = Date.now();
+            while (Date.now() - start < duration) {
+
+            }
+        }
+        btn.onclick = function abc() {
+            h1.textContent = '123';
+            delay(3000);
+        }
+
+    </script>
+</body>
+
+</html>

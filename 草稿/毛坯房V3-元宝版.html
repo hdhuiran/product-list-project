@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>毛坯房元宝版</title>
+    <style>
+      .container {
+        display: flex;
+        height: 100vh;
+      }
+
+      .side_first_row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between; /* 两端对齐 */
+        align-items: center; /* 垂直居中 */
+        padding: 0 20px; /* 添加左右内边距 */
+      }
+
+      /* 盗版seek样式 */
+      .logo {
+        flex: 1;
+        white-space: nowrap; /* 防止文字换行 */
+        color: #2196f3; /* 蓝色 */
+        font-size: 1.6em; /* 原始尺寸的1.5倍 */
+        font-weight: bold;
+      }
+
+      /* 侧边栏按钮样式 */
+      .sidebar_bottom {
+        flex: 1;
+        white-space: nowrap; /* 防止文字换行 */
+        flex-shrink: 0; /* 禁止缩小 */
+        margin-left: 20px; /* 添加间距 */
+      }
+
+      /* 按钮基础样式 */
+      .collapse_btn {
+        background: none;
+        border: none;
+        padding: 8px;
+        cursor: pointer; /* 鼠标悬停样式 */
+        position: relative; /* 相对定位 */
+        transition: 0.3s; /* 所有属性变化添加0.3秒过渡动画 */
+      }
+
+      /* 文字默认隐藏 */
+      .btn_text {
+        opacity: 0; /* 完全透明（隐藏文字） */
+        margin-left: 8px;
+        transition: 0.3s; /* 文字透明度变化过渡动画 */
+      }
+
+      /* 鼠标悬停效果 */
+      .collapse_btn:hover .btn_text {
+        opacity: 1; /* 从透明变成不透明 */
+        color: #666;
+      }
+
+      /* 箭头样式 */
+      .arrow {
+        font-size: 1.2em; /* 箭头大小（相对父元素字体） */
+        display: inline-block; /* 行内块（可设置宽高且不换行） */
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* 指定旋转过渡 */
+      }
+      .arrow::after {
+        content: "▶";
+        display: inline-block;
+        transition: transform 0.3s;
+      }
+      .sidebar.collapsed .arrow::after {
+        transform: rotate(180deg);
+      }
+
+      /* 侧边栏自适应 */
+      .sidebar {
+        flex: 1;
+        min-width: 200px; /* 最小宽度 */
+        background: #eee;
+        position: relative;
+      }
+
+      /* 窄按钮通用样式 */
+      .narrow_btn {
+        width: 10%; /* 相对父容器宽度 */
+        min-width: 60px; /* 最小可读宽度 */
+        height: 36px; /* 触控友好高度 */
+        margin: 8px auto; /* 上下间距+水平居中 */
+        background: #2196f3; /* 品牌蓝色 */
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: block; /* 独占一行 */
+
+      }
+
+      /* 悬停效果增强 */
+      .narrow_btn:hover {
+        background: #1976d2;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      /* 下载按钮差异化 */
+      .download_btn {
+        background: #4caf50; /* 绿色强调 */
+      }
+
+      /* 登录按钮差异化 */
+      .login_btn {
+        background: #ff5722; /* 橙色强调 */
+      }
+      /* 第二行布局 */
+      .side_second_row,
+      .sidebar_bottom_btns {
+        width: 100%; /*强制继承侧边栏宽度*/
+        box-sizing: border-box; /* 包含内边距*/
+        margin-top: 30px;
+        padding: 0 20px;
+      }
+
+      /* 底部按钮容器 */
+      .sidebar_bottom_btns {
+        position: absolute;
+        bottom: 20px;
+        width: 100%;
+        padding: 0 20px;
+      }
+
+      /* 按钮间距控制 */
+      .download_btn {
+        margin-bottom: 40px; /* 与登录按钮间隔 */
+      }
+
+      /* 折叠状态适配 */
+      /* .sidebar.collapsed .narrow_btn {
+        width: 80%; 
+        min-width: auto;
+        margin: 8px 10%;
+      } */
+      .sidebar:not(.collapsed) .narrow_btn {
+        width: calc(100% - 40px); /* 留出左右内边距空间 */
+        margin: 8px 20px; /* 水平居中 */
+      }
+      .sidebar.collapsed .narrow_btn {
+        width: 80%;
+        min-width: 60px; /* 保持可读性 */
+        margin: 8px 10%;
+      }
+
+      /* 使绝对定位的地步按钮能正确对齐 */
+      .sidebar.collapsed .btn_text {
+        display: none; /* 隐藏文字 */
+      }
+
+      /* 登录按钮动画 */
+      .login_btn {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* 内容区自适应  */
+      .content {
+        flex: 6;
+        background: white;
+      }
+    </style>
+    <script>
+      // 侧边栏动画
+      function toggleSidebar() {
+        // 1. 获取DOM元素
+        const sidebar = document.querySelector(".sidebar");
+        const arrow = document.querySelector(".arrow");
+
+        // 切换侧边栏状态,toggle 修改但不覆盖其他class属性 执行后变为 sidebar collapsed，再次执行恢复为 sidebar
+        // 当 collapsed 类被添加或移除时，浏览器会重新渲染元素，应用或取消与该类关联的 CSS 样式
+        // sidebar.classList.toggle("collapsed");
+        const isCollapsed = sidebar.classList.toggle("collapsed");
+        localStorage.setItem("sidebarCollapsed", isCollapsed); // 持久化状态
+
+        // 旋转箭头
+        //contains该方法直接操作 DOM 元素的类名列表，检测是否存在指定类名，返回布尔值，时间复杂度为 O(1)
+        // arrow.style.transform = sidebar.classList.contains("collapsed")
+          // ? // 检测侧边栏元素 sidebar 是否包含 collapsed类名
+            // 三元运算符
+            // "rotate(180deg)" //条件为真时，旋转180度
+          // : "rotate(0deg)"; //条件为假时，恢复
+        localStorage.setItem("sidebarCollapsed", isCollapsed);
+        arrow.style.transform = isCollapsed ? "rotate(180deg)" : "rotate(0deg)";  
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <!-- 侧边栏第一行 -->
+        <div class="side_first_row">
+          <div class="logo">盗版seek</div>
+          <div class="sidebar_bottom">
+            <button class="collapse_btn" onclick="toggleSidebar()">
+              <span class="btn_text">侧边栏收起</span>
+              <span class="arrow">←</span>
+            </button>
+          </div>
+        </div>
+        <!-- 侧边栏的第二行 -->
+        <div class="side_second_row">
+          <button class="narrow_btn">开启新对话</button>
+        </div>
+
+        <!-- 底部按钮容器 -->
+        <div class="sidebar_bottom_btns">
+          <button class="narrow_btn download_btn">下载App</button>
+          <button class="narrow_btn login_btn">登录</button>
+        </div>
+      </div>
+
+      <div class="content">内容区</div>
+    </div>
+  </body>
+</html>

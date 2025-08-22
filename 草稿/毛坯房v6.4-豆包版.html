@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+        /* 页面整体容器样式，采用 flex 布局，高度占满整个视口 */
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* 侧边栏第一行样式，使用 flex 布局，水平两端对齐，垂直居中，添加左右内边距 */
+        .side_first_row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        /* 侧边栏 logo 样式，弹性布局，文字不换行，蓝色字体，加大加粗 */
+        .logo {
+            flex: 1;
+            white-space: nowrap;
+            color: #2196f3;
+            font-size: 1.6em;
+            font-weight: bold;
+            transition: opacity 0.3s; /* 添加过渡效果 */
+        }
+
+        /* 侧边栏折叠时隐藏 logo */
+        .sidebar.collapsed .logo {
+            opacity: 0;
+            pointer-events: none; /* 禁用鼠标事件，避免影响其他操作 */
+        }
+
+        /* 侧边栏底部按钮容器样式，调整样式确保按钮在侧边栏内 */
+        .sidebar_bottom {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        /* 折叠按钮样式，无背景和边框，添加内边距，鼠标悬停时显示指针，添加过渡动画 */
+        .collapse_btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: 0.3s;
+        }
+
+        /* 折叠按钮文字样式，默认隐藏 */
+        .btn_text {
+            display: none;
+        }
+
+        /* 提示框样式 */
+        .tooltip {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translateY(-50%);
+            background-color: #000;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1;
+        }
+
+        /* 鼠标悬停在折叠按钮上时，显示提示框 */
+        .collapse_btn:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 折叠按钮箭头样式，设置字体大小，显示为行内块元素，添加旋转过渡动画 */
+        .arrow {
+            font-size: 1.2em;
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 折叠按钮箭头的伪元素样式，显示为行内块元素，添加旋转过渡动画 */
+        .arrow::after {
+            content: "▶";
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+
+        /* 当侧边栏处于折叠状态时，箭头旋转 180 度 */
+        .sidebar.collapsed .arrow::after {
+            transform: rotate(180deg);
+        }
+
+        /* 侧边栏样式，初始宽度固定为 200px，背景颜色为浅灰色，相对定位，添加宽度过渡动画 */
+        .sidebar {
+            width: 200px;
+            background: #eee;
+            position: relative;
+            transition: width 0.3s;
+        }
+
+        /* 侧边栏折叠后的样式，宽度变为页面宽度的 1/16 */
+        .sidebar.collapsed {
+            width: calc(100vw / 16);
+        }
+
+        /* 侧边栏内按钮通用样式，宽度为侧边栏宽度减去左右内边距，设置最小宽度、高度、外边距、背景颜色、文字颜色、边框、圆角、鼠标指针样式，添加过渡动画，显示为块元素，设置字体大小 */
+        .narrow_btn {
+            width: calc(100% - 40px);
+            min-width: 60px;
+            height: 36px;
+            margin: 8px 20px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            font-size: 1em;
+        }
+
+        /* 鼠标悬停在侧边栏内按钮上时，背景颜色变深，向上移动 2px，添加阴影 */
+        .narrow_btn:hover {
+            background: #1976d2;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 下载按钮样式，背景颜色为绿色 */
+        .download_btn {
+            background: #4caf50;
+        }
+
+        /* 登录按钮样式，背景颜色为橙色 */
+        .login_btn {
+            background: #ff5722;
+        }
+
+        /* 侧边栏第二行和底部按钮容器样式，宽度占满父元素，包含内边距，添加顶部外边距和左右内边距 */
+        .side_second_row,
+        .sidebar_bottom_btns {
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 30px;
+            padding: 0 20px;
+        }
+
+        /* 侧边栏底部按钮容器样式，绝对定位在底部，宽度占满父元素，添加左右内边距 */
+        .sidebar_bottom_btns {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        /* 下载按钮与登录按钮之间的间距 */
+        .download_btn {
+            margin-bottom: 40px;
+        }
+
+        /* 侧边栏折叠时，侧边栏内按钮字体变小 */
+        .sidebar.collapsed .narrow_btn {
+            font-size: 0.8em;
+        }
+
+        /* 登录按钮动画，使用 pulse 动画，持续 2 秒，无限循环 */
+        .login_btn {
+            animation: pulse 2s infinite;
+        }
+
+        /* 定义 pulse 动画，按钮在 0% 和 100% 时大小不变，在 50% 时放大 5% */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* 内容区样式，弹性布局，背景颜色为白色 */
+        .content {
+            flex: 6;
+            background: white;
+        }
+    </style>
+    <script>
+        // 侧边栏切换函数
+        function toggleSidebar() {
+            // 获取侧边栏元素
+            const sidebar = document.querySelector(".sidebar");
+            // 切换侧边栏的 collapsed 类，返回切换后的状态（true 表示添加了 collapsed 类，false 表示移除了 collapsed 类）
+            const isCollapsed = sidebar.classList.toggle("collapsed");
+            // 将侧边栏的折叠状态存储到本地存储中，以便刷新页面后保持状态
+            localStorage.setItem("sidebarCollapsed", isCollapsed);
+        }
+    </script>
+</head>
+
+<body>
+    <!-- 页面整体容器 -->
+    <div class="container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <!-- 侧边栏第一行 -->
+            <div class="side_first_row">
+                <!-- 侧边栏 logo -->
+                <div class="logo">盗版seek</div>
+                <!-- 侧边栏底部按钮容器 -->
+                <div class="sidebar_bottom">
+                    <!-- 折叠按钮，点击时调用 toggleSidebar 函数 -->
+                    <button class="collapse_btn" onclick="toggleSidebar()">
+                        <!-- 折叠按钮文字，默认隐藏 -->
+                        <span class="btn_text">侧边栏收起</span>
+                        <!-- 提示框 -->
+                        <span class="tooltip">侧边栏收起</span>
+                        <!-- 折叠按钮箭头 -->
+                        <span class="arrow"></span>
+                    </button>
+                </div>
+            </div>
+            <!-- 侧边栏第二行 -->
+            <div class="side_second_row">
+                <!-- 开启新对话按钮 -->
+                <button class="narrow_btn">开启新对话</button>
+            </div>
+            <!-- 侧边栏底部按钮容器 -->
+            <div class="sidebar_bottom_btns">
+                <!-- 下载 App 按钮 -->
+                <button class="narrow_btn download_btn">下载App</button>
+                <!-- 登录按钮 -->
+                <button class="narrow_btn login_btn">登录</button>
+            </div>
+        </div>
+        <!-- 内容区 -->
+        <div class="content">内容区</div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h1 {
+            display: flex;
+            justify-content: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            border: 2px solid #333;
+            /* width: 90%; */
+            /* 占页面宽度90% */
+            margin: 0px auto;
+            /* 居中显示 */
+        }
+
+        th,
+        td {
+            width: 60px;
+            /* 列宽 */
+            height: 30px;
+            /* 行高 */
+            border: 1px solid #666;
+            /* 单元格边框 */
+            padding: 10px;
+            /* 内边距 */
+        }
+
+        th {
+            background-color: #4CAF50;
+            /* 绿色 */
+            color: white;
+            font-weight: bold;
+        }
+
+        td[rowspan="4"] {
+            background-color: #4CAF50;
+            /* 合并单元格背景色 */
+            text-align: center;
+            /* 垂直居中 */
+            vertical-align: middle;
+            /* 水平居中 */
+        }
+
+        td[rowspan="3"] {
+            background-color: #4CAF50;
+            /* 合并单元格背景色 */
+            text-align: center;
+            /* 垂直居中 */
+            vertical-align: middle;
+            /* 水平居中 */
+        }
+
+        /* 给表头第一个th添加样式 */
+        th:first-child {
+            background-color: #f0f0f0;
+            /* 浅灰色 */
+            /* 可选：隐藏边框或文字 */
+            border-right: 1px solid #666;
+            /* 保留右侧边框，与其他列分隔 */
+            color: #666;
+            /* 淡化文字颜色 */
+        }
+
+        .spacer {
+            height: 30px;
+            /* 间隔高度，可调整 */
+        }
+
+        .spacer td {
+            border: none;
+            /* 隐藏空白行的边框 */
+            background-color: transparent;
+            /* 透明背景 */
+        }
+
+        .container {
+            display: flex;
+            /* height: 100vh; */
+            /* 占满视口高度，可改为固定值如 800px */
+            justify-content: center;
+            /* 子元素水平居中 */
+            align-items: center;
+            /* 子元素垂直居中 */
+        }
+
+        .class_container {
+            display: flex;
+            padding: 5px;
+            flex-direction: column;
+            background-color: #c3c1c1;
+        }
+
+        .class_container div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            /* 列宽 */
+            height: 25px;
+            /* border: 1px solid #666; */
+            /* 单元格边框 */
+            padding: 5px;
+            margin: 3px;
+        }
+
+        .table_container {
+            display: flex;
+            /* background-color: #666; */
+        }
+
+        .table_container div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            /* 列宽 */
+            height: 25px;
+            /* border: 1px solid #666; */
+            /* 单元格边框 */
+            padding: 5px;
+            /* margin: 3px; */
+        }
+
+
+        [data-course="math"] {
+            background-color: #03f60b;
+        }
+
+        /* 数学-绿色 */
+        [data-course="chinese"] {
+            background-color: #2196F3;
+        }
+
+        /* 语文-蓝色 */
+        [data-course="english"] {
+            background-color: #FF9800;
+        }
+
+        /* 英语-橙色 */
+        [data-course="physics"] {
+            background-color: #FF4444;
+        }
+
+        [data-course="history"] {
+            background-color: rgb(246, 10, 10);
+        }
+
+        [data-course="politis"] {
+            background-color: aquamarine;
+        }
+
+        [data-course="geography"] {
+            background-color: burlywood;
+        }
+
+        [data-course="chemistry"] {
+            background-color: aqua;
+        }
+
+        [data-course="organism"] {
+            background-color: blueviolet;
+        }
+
+        [data-course="PE"] {
+            background-color: deeppink;
+        }
+
+        .drop-over {
+            background-color: #4a4848;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>课程表</h1>
+    <div class="container">
+        <div class="class_container" data-allow="move">
+            <div data-effect="copy" draggable="true" data-course="math">数学</div>
+            <div data-effect="copy" draggable="true" data-course="chinese">语文</div>
+            <div data-effect="copy" draggable="true" data-course="english">英语</div>
+            <div data-effect="copy" draggable="true" data-course="politis">政治</div>
+            <div data-effect="copy" draggable="true" data-course="history">历史</div>
+            <div data-effect="copy" draggable="true" data-course="geography">地理</div>
+            <div data-effect="copy" draggable="true" data-course="physics">物理</div>
+            <div data-effect="copy" draggable="true" data-course="chemistry">化学</div>
+            <div data-effect="copy" draggable="true" data-course="organism">生物</div>
+            <div data-effect="copy" draggable="true" data-course="PE">体育</div>
+        </div>
+        <!-- <div class="class_container">
+            <div data-course="math">数学</div>
+            <div data-course="chinese">语文</div>
+            <div data-course="english">英语</div>
+            <div data-course="politis">政治</div>
+            <div data-course="history">历史</div>
+            <div data-course="geography">地理</div>
+            <div data-course="physics">物理</div>
+            <div data-course="chemistry">化学</div>
+            <div data-course="organism">生物</div>
+            <div data-course="PE">体育</div>
+        </div> -->
+        <div class="table_container">
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>周一</th>
+                        <th>周二</th>
+                        <th>周三</th>
+                        <th>周四</th>
+                        <th>周五</th>
+                        <th>周六</th>
+                        <th>周日</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="4">上午</td>
+                        <td data-allow="copy">
+                            <div data-effect="move" data-course="math" draggable="true">数学</div>
+                        </td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                    </tr>
+                    <tr>
+
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                    <tr>
+
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"> </td>
+                        <td data-allow="copy"></td>
+                    </tr>
+                    <tr>
+
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                    </tr>
+                    <!-- 插入空白行（关键步骤） -->
+                    <tr class="spacer">
+                        <!-- 第一列需占位，但隐藏内容和边框 -->
+                        <td></td>
+                        <!-- 其他列合并并设置透明背景 -->
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+
+                        <td rowspan="3">下午</td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                    </tr>
+                    <tr>
+
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                    </tr>
+                    <tr>
+
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                        <td data-allow="copy"></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        const container = document.querySelector('.container');
+        let source;
+        container.ondragstart = (e) => {
+            // copy拖动源数据不会被移动，目标位置会创建副本
+            e.dataTransfer.effectAllowed = e.target.dataset.effect;
+            source = e.target;
+            console.log('start', e.target);
+        };
+        container.ondragover = (e) => {
+            e.preventDefault();
+
+            // console.log('start', e.target);
+        };
+
+        function clearStyles() {
+            document.querySelectorAll('.drop-over').forEach((el) => {
+                el.classList.remove('drop-over')
+            })
+        }
+        // 递归查找父元素结点，防止背景颜色变化
+        function getDropNode(node) {
+            while (node) {
+                if (node.dataset.allow) {
+                    return node;
+                }
+                node = node.parentNode;
+            }
+        }
+
+        // function getDropNode(node) {
+        //     while (node) {
+        //         // 检查节点是否有 data-allow 属性（关键修复点）
+        //         if (node.hasAttribute('data-allow')) {
+        //             return node;
+        //         }
+        //         node = node.parentNode;
+        //     }
+        //     return null; // 未找到时返回 null
+        // }
+        container.ondragenter = (e) => {
+            clearStyles();
+            const node = getDropNode(e.target)
+            if (!node) {
+                return;
+            }
+            // console.log('start', e.target);
+            if (source.dataset.effect === node.dataset.allow) { node.classList.add('drop-over') }
+
+        }
+        container.ondrop = (e) => {
+            clearStyles();
+            const node = getDropNode(e.target)
+            if (!node) {
+                return;
+            }
+            if (source.dataset.effect !== node.dataset.allow) {
+                return;
+            }
+            // console.log('drop', e.target);
+            if (node.dataset.allow === 'copy') {
+                node.innerHTML = '';
+                const cloned = source.cloneNode(true);
+                cloned.dataset.effect = 'move';
+                node.appendChild(cloned);
+            } else {
+                source.remove();
+            }
+        }
+    </script>
+
+
+</body>
+
+</html>

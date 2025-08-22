@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天页面</title>
+    <style>
+        /* 页面基础布局 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        /* 左侧列 */
+        #left-column {
+            width: 300px;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        #left-column button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #left-column button:hover {
+            background-color: #0056b3;
+        }
+
+        #left-column .search-chat {
+            display: none;
+            margin-top: 10px;
+        }
+
+        #left-column .search-chat input {
+            width: calc(100% - 40px);
+            padding: 10px;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        #left-column .search-chat button {
+            padding: 10px;
+            margin-left: -40px;
+            background-color: #ccc;
+            border: none;
+            cursor: pointer;
+        }
+
+        #left-column .history-list {
+            margin-top: 20px;
+        }
+
+        #left-column .history-list a {
+            display: block;
+            padding: 10px;
+            background-color: #e9ecef;
+            margin: 5px 0;
+            text-decoration: none;
+            color: black;
+        }
+
+        #left-column .history-list a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* 右侧列 */
+        #right-column {
+            flex-grow: 1;
+            background-color: #ffffff;
+            padding: 20px;
+        }
+
+        #right-column .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #right-column .dropdown {
+            position: relative;
+        }
+
+        #right-column .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #f1f1f1;
+            width: 100px;
+            border: 1px solid #ccc;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #right-column .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        #right-column .dropdown-menu a {
+            padding: 10px;
+            display: block;
+            text-decoration: none;
+            color: black;
+        }
+
+        #right-column .dropdown-menu a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* 主内容区域 */
+        #right-column .main-content {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #right-column .main-content h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #right-column .main-content input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #right-column .main-content button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        #right-column .main-content button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="left-column">
+        <button id="search-chat-btn">搜索聊天</button>
+        <button id="new-chat-btn">新聊天</button>
+
+        <div class="search-chat" id="search-chat-window">
+            <input type="text" placeholder="搜索聊天">
+            <button onclick="closeSearchChat()">X</button>
+        </div>
+
+        <div class="history-list">
+            <h3>最近</h3>
+            <a href="#">对话标题 1</a>
+            <a href="#">对话标题 2</a>
+            <a href="#">对话标题 3</a>
+        </div>
+    </div>
+
+    <div id="right-column">
+        <div class="top-bar">
+            <div class="dropdown">
+                <button>AI版本选择</button>
+                <div class="dropdown-menu">
+                    <a href="#">AI1.0</a>
+                    <a href="#">AI2.0</a>
+                    <a href="#">AI3.0</a>
+                </div>
+            </div>
+            <button id="login-btn">用户登录</button>
+        </div>
+
+        <div class="main-content">
+            <h1>有什么可以帮忙的？</h1>
+            <input type="text" id="user-input" placeholder="请输入问题">
+            <button onclick="submitInput()">提交</button>
+        </div>
+    </div>
+
+    <script>
+        // 显示/隐藏搜索聊天窗口
+        document.getElementById('search-chat-btn').addEventListener('click', function () {
+            document.getElementById('search-chat-window').style.display = 'block';
+        });
+
+        function closeSearchChat() {
+            document.getElementById('search-chat-window').style.display = 'none';
+        }
+
+        // 用户登录按钮事件
+        document.getElementById('login-btn').addEventListener('click', function () {
+            window.open('login.html', '用户登录', 'width=400,height=300');
+        });
+
+        // 提交输入框内容
+        function submitInput() {
+            var userInput = document.getElementById('user-input').value;
+            alert('用户输入：' + userInput);
+        }
+    </script>
+</body>
+
+</html>
